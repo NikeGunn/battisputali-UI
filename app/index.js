@@ -150,37 +150,41 @@ const HomeScreen = () => {
           <Fontisto name="share-a" size={28} color="white" />
         </TouchableOpacity>
       </View>
-      <Animated.View
-        style={[styles.modalContainer, { transform: [{ translateY: modalTranslateY }] }]}
-      >
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Comments</Text>
-          <TextInput
-            style={styles.commentInput}
-            placeholder="Write a comment..."
-            value={comments}
-            onChangeText={setComments}
-          />
-          <Button title="Post" onPress={handlePostComment} />
-        </View>
-      </Animated.View>
     </View>
   );
 
   return (
-    <FlatList
-      data={videoData}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      pagingEnabled
-      showsVerticalScrollIndicator={false}
-      onViewableItemsChanged={handleViewableItemsChanged}
-      viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
-    />
+    <View style={styles.container}>
+      {/* Add Text at the top */}
+      <Text style={styles.topText}>For You</Text>
+      <FlatList
+        data={videoData}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={handleViewableItemsChanged}
+        viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  topText: {
+    position: 'absolute',
+    top: 40,
+    width: '100%',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    zIndex: 1,
+  },
   videoContainer: {
     height,
     justifyContent: 'center',
@@ -219,40 +223,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 5,
     fontSize: 16,
-  },
-  modalContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 300,
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: -5 },
-  },
-  modalContent: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  commentInput: {
-    width: '100%',
-    height: 100,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
   },
 });
 

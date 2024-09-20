@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Tabs } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 export default function Layout() {
   return (
@@ -28,6 +28,17 @@ export default function Layout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="friends"
+        options={{
+          title: 'Friends',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people" size={size} color={color} />
+          ),
+        }}
+      />
+      
       <Tabs.Screen
         name="upload"
         options={{
@@ -39,6 +50,16 @@ export default function Layout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Notifications',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="notifications" size={size} color={color} />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="profile"
         options={{
