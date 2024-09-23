@@ -1,229 +1,101 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { View, FlatList, Dimensions, StyleSheet, TouchableOpacity, Text, Share, TextInput, Button, Animated } from 'react-native';
-import { Video } from 'expo-av';
-import { Fontisto, MaterialIcons, AntDesign, FontAwesome } from '@expo/vector-icons';
+import * as React from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Video, ResizeMode } from "expo-av";
+import { useRouter } from "expo-router";
 
-const { height } = Dimensions.get('window');
+export default function App() {
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
+  const router = useRouter();
 
-const videoData = [
-  { id: '1', url: 'https://www.w3schools.com/html/mov_bbb.mp4', likes: 100, comments: [] },
-  { id: '2', url: 'https://www.w3schools.com/html/movie.mp4', likes: 50, comments: [] },
-];
-
-const HomeScreen = () => {
-  const [currentIndex, setCurrentIndex] = useState(null);
-  const [playingStatus, setPlayingStatus] = useState({});
-  const [likeStatus, setLikeStatus] = useState({});
-  const videoRefs = useRef({});
-  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
-  const [comments, setComments] = useState('');
-  const [videoComments, setVideoComments] = useState({});
-  const modalTranslateY = useRef(new Animated.Value(height)).current;
-
-  useEffect(() => {
-    if (isCommentModalVisible) {
-      Animated.timing(modalTranslateY, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(modalTranslateY, {
-        toValue: height,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isCommentModalVisible]);
-
-  const handleOpenComments = (index) => {
-    setCurrentIndex(index);
-    setCommentModalVisible(true);
-  };
-
-  const handleCloseComments = () => {
-    setCommentModalVisible(false);
-  };
-
-  const handlePostComment = () => {
-    if (currentIndex !== null) {
-      setVideoComments((prev) => ({
-        ...prev,
-        [currentIndex]: [...(prev[currentIndex] || []), comments],
-      }));
-      setComments('');
-      handleCloseComments();
-    }
-  };
-
-  const togglePlayback = useCallback(async (index) => {
-    const videoRef = videoRefs.current[index];
-    if (videoRef) {
-      const status = await videoRef.getStatusAsync();
-      if (status.isPlaying) {
-        videoRef.pauseAsync();
-        setPlayingStatus((prevStatus) => ({ ...prevStatus, [index]: false }));
-      } else {
-        videoRef.playAsync();
-        setPlayingStatus((prevStatus) => ({ ...prevStatus, [index]: true }));
-      }
-    }
-  }, []);
-
-  const toggleLike = (index) => {
-    setLikeStatus((prevStatus) => ({
-      ...prevStatus,
-      [index]: !prevStatus[index],
-    }));
-  };
-
-  const handleShare = async (url) => {
-    try {
-      await Share.share({
-        message: `Check out this cool video: ${url}`,
-      });
-    } catch (error) {
-      console.error("Error sharing video:", error);
-    }
-  };
-
-  const handleViewableItemsChanged = useCallback(({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      const { index } = viewableItems[0];
-      const videoId = videoData[index].id;
-      setCurrentIndex(videoId);
-      Object.keys(videoRefs.current).forEach((key) => {
-        if (key !== videoId) {
-          videoRefs.current[key]?.pauseAsync();
-          setPlayingStatus((prevStatus) => ({ ...prevStatus, [key]: false }));
-        }
-      });
-    }
-  }, []);
-
-  const renderItem = ({ item }) => (
-    <View style={styles.videoContainer}>
+  return (
+    <View style={styles.container}>
       <Video
-        ref={(ref) => (videoRefs.current[item.id] = ref)}
-        source={{ uri: item.url }}
+        ref={video}
         style={styles.video}
-        resizeMode="cover"
-        shouldPlay={currentIndex === item.id && playingStatus[item.id]}
+        source={{
+          uri: "https://cdn.pixabay.com/video/2023/01/19/147099-790883649_large.mp4",
+        }}
+        resizeMode={ResizeMode.COVER}
+        shouldPlay
         isLooping
-        onPlaybackStatusUpdate={(status) => {
-          if (status.isPlaying !== playingStatus[item.id]) {
-            setPlayingStatus((prevStatus) => ({ ...prevStatus, [item.id]: status.isPlaying }));
-          }
-        }}
-        onError={(error) => {
-          console.error(`Error loading video ${item.id}:`, error);
-        }}
+        onPlaybackStatusUpdate={(status) => setStatus(() => status)}
       />
-      {currentIndex === item.id && !playingStatus[item.id] && (
-        <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={() => togglePlayback(item.id)} style={styles.controlButton}>
-            <MaterialIcons name="play-arrow" size={60} color="white" />
-          </TouchableOpacity>
-        </View>
-      )}
-      {currentIndex === item.id && playingStatus[item.id] && (
-        <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={() => togglePlayback(item.id)} style={styles.controlButton}>
-            <MaterialIcons name="pause" size={60} color="white" />
-          </TouchableOpacity>
-        </View>
-      )}
-      <View style={styles.actionContainer}>
-        <TouchableOpacity onPress={() => toggleLike(item.id)} style={styles.actionButton}>
-          <AntDesign
-            name={likeStatus[item.id] ? 'heart' : 'hearto'}
-            size={30}
-            color={likeStatus[item.id] ? 'red' : 'white'}
-          />
-          <Text style={styles.actionText}>{likeStatus[item.id] ? item.likes + 1 : item.likes}</Text>
+      <View style={styles.overlay}>
+        <Text style={styles.mainText}>३२ पुतली</Text>
+        <Text style={styles.subText}>Create Your Content</Text>
+        <Text style={styles.tagline}>Build Videos, Go Viral</Text>
+      </View>
+      <View style={styles.buttons}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("./login")}
+        >
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleOpenComments(item.id)} style={styles.actionButton}>
-          <FontAwesome name="comment-o" size={30} color="white" />
-          <Text style={styles.actionText}>{item.comments.length}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.actionButton}>
-          <Fontisto name="share-a" size={28} color="white" />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("./register")}
+        >
+          <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-
-  return (
-    <View style={styles.container}>
-      {/* Add Text at the top */}
-      <Text style={styles.topText}>For You</Text>
-      <FlatList
-        data={videoData}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={handleViewableItemsChanged}
-        viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
-      />
-    </View>
-  );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
-  },
-  topText: {
-    position: 'absolute',
-    top: 40,
-    width: '100%',
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    zIndex: 1,
-  },
-  videoContainer: {
-    height,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
+    justifyContent: "center",
   },
   video: {
-    width: '100%',
-    height: '100%',
+    ...StyleSheet.absoluteFillObject,
   },
-  iconContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -30 }, { translateY: -30 }],
-    justifyContent: 'center',
-    alignItems: 'center',
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  controlButton: {
-    padding: 10,
-    borderRadius: 30,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  mainText: {
+    color: "#d4a5e8",
+    fontSize: 68,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  actionContainer: {
-    position: 'absolute',
-    bottom: 100,
-    right: 10,
-    flexDirection: 'column',
-    alignItems: 'center',
+  subText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  actionButton: {
-    marginBottom: 20,
-    alignItems: 'center',
+  tagline: {
+    color: "white",
+    fontSize: 18,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginTop: 10,
   },
-  actionText: {
-    color: 'white',
-    marginTop: 5,
-    fontSize: 16,
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 30,
+    left: 0,
+    right: 0,
+  },
+  button: {
+    backgroundColor: "tomato",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    elevation: 3, // Adds a shadow effect on Android
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
-
-export default HomeScreen;

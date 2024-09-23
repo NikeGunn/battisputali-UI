@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
+
 
 const friendsData = [
-  { id: '1', name: 'Bikram Sudi', avatar: 'https://randomuser.me/api/portraits/men/1.jpg' },
+  { id: '1', name: 'Bikram Sah Sudi', avatar: 'https://randomuser.me/api/portraits/men/1.jpg' },
   { id: '2', name: 'Jane Smith', avatar: 'https://randomuser.me/api/portraits/women/2.jpg' },
   { id: '3', name: 'Alex Johnson', avatar: 'https://randomuser.me/api/portraits/men/3.jpg' },
   { id: '4', name: 'Tesang', avatar: 'https://randomuser.me/api/portraits/men/4.jpg' },
@@ -15,6 +16,7 @@ const friendsData = [
 ];
 
 const FriendsScreen = () => {
+
   return (
     <View style={styles.container}>
       {/* StatusBar Configuration */}

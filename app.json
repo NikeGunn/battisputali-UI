@@ -1,33 +1,55 @@
 {
   "expo": {
-    "name": "battisputali",
+    "name": "३२ पुतली",
     "slug": "battisputali",
-    "version": "1.0.0",
+    "scheme": "battisputali",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#d4a5e8"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/2fdb6f08-ec7a-4352-bedc-8021b5515591"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.battisputali",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.yourcompany.battisputali",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "myapp"
+    "eas": {
+      "projectId": "2fdb6f08-ec7a-4352-bedc-8021b5515591"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2fdb6f08-ec7a-4352-bedc-8021b5515591"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }

@@ -15,6 +15,8 @@ const notificationsData = [
 ];
 
 const NotificationScreen = () => {
+
+  
   return (
     <View style={styles.container}>
       {/* StatusBar Configuration */}
